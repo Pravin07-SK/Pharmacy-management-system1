@@ -1,0 +1,1310 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenCare Pharmacy</title>
+
+<style>
+:root {
+    --green: #168451;
+    --green-dark: #0c633b;
+    --green-light: #e9f7ef;
+    --background: #f5f8f6;
+    --white: #ffffff;
+    --text: #20352a;
+    --muted: #718078;
+    --border: #e0e9e3;
+    --red: #c0392b;
+    --shadow: 0 5px 20px rgba(24, 70, 43, .06);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+button, input { font: inherit; }
+
+button {
+    cursor: pointer;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 15px;
+    background: var(--green);
+    color: white;
+    transition: .2s;
+}
+
+button:hover { background: var(--green-dark); }
+button:disabled { opacity: .6; cursor: wait; }
+
+button.secondary {
+    background: #edf3ef;
+    color: var(--text);
+}
+button.secondary:hover { background: #dce9e0; }
+
+button.danger { background: var(--red); }
+button.danger:hover { background: #962d22; }
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d6e2d9;
+    border-radius: 8px;
+    background: white;
+    color: var(--text);
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px #16845118;
+}
+
+input[readonly] { background: #eef2ef; }
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 650;
+    margin-bottom: 7px;
+}
+
+.hidden { display: none !important; }
+
+/* LOGIN AND HOME */
+
+.public-header {
+    padding: 20px 7%;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    background: var(--green-light);
+    color: var(--green);
+    padding: 12px;
+    border-radius: 13px;
+    font-size: 24px;
+}
+
+.brand h1 { margin: 0; font-size: 23px; }
+.brand p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+
+.public-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.public-main {
+    max-width: 1120px;
+    margin: 35px auto;
+    padding: 0 20px;
+}
+
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 90% 15%,
+            rgba(22, 132, 81, 0.13), transparent 30%),
+        linear-gradient(135deg, #f0fbf4 0%, #ffffff 65%);
+    border: 1px solid #d5ecdd;
+    border-radius: 26px;
+    padding: 65px 45px;
+    box-shadow: 0 12px 35px rgba(24, 70, 43, 0.07);
+}
+
+.eyebrow {
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+
+.hero h2 {
+    max-width: 620px;
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.15;
+    letter-spacing: -1.2px;
+    color: #174b32;
+    margin: 16px 0;
+}
+
+.hero p {
+    max-width: 580px;
+    color: #627469;
+    font-size: 16px;
+    line-height: 1.9;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+}
+
+.hero-actions button {
+    padding: 13px 21px;
+    font-weight: 600;
+    border-radius: 10px;
+}
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    margin-top: 30px;
+}
+
+.feature, .login-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 23px;
+    box-shadow: var(--shadow);
+}
+
+.feature-icon { font-size: 25px; }
+.feature h3 { margin-bottom: 8px; }
+.feature p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+.login-wrap {
+    max-width: 460px;
+    margin: 40px auto;
+}
+
+.login-card h2 { margin-top: 0; }
+.login-card > p { color: var(--muted); line-height: 1.6; }
+.login-form { display: grid; gap: 14px; margin-top: 22px; }
+.login-form button { width: 100%; padding: 13px; }
+
+.login-message, .message {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.error {
+    background: #ffeded !important;
+    color: #a52626 !important;
+}
+
+.public-footer {
+    padding: 25px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* DASHBOARD */
+
+.dashboard {
+    display: none;
+    min-height: 100vh;
+}
+
+.dashboard.active { display: flex; }
+
+.sidebar {
+    width: 245px;
+    flex-shrink: 0;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    padding: 24px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .brand { padding: 0 7px 28px; }
+.sidebar .brand h1 { font-size: 18px; }
+.sidebar .brand-icon { font-size: 20px; padding: 10px; }
+
+.nav-label {
+    color: #91a096;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    padding: 10px 12px;
+}
+
+.side-link {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    background: transparent;
+    color: #596c60;
+    text-align: left;
+    padding: 13px 12px;
+    margin-bottom: 5px;
+    border-radius: 9px;
+}
+
+.side-link:hover, .side-link.active {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.side-bottom {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+.main-area { flex: 1; min-width: 0; }
+
+.topbar {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 19px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.topbar h2 { margin: 0; font-size: 21px; }
+.topbar p { margin: 5px 0 0; font-size: 13px; color: var(--muted); }
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.avatar {
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--green-dark);
+    background: var(--green-light);
+    font-weight: 800;
+}
+
+.content { padding: 27px; max-width: 1450px; margin: auto; }
+
+.view { display: none; }
+.view.active { display: block; }
+
+.welcome {
+    background: linear-gradient(120deg, #168451, #0b6540);
+    color: white;
+    border-radius: 16px;
+    padding: 26px;
+    margin-bottom: 23px;
+}
+
+.welcome h3 { font-size: 23px; margin: 0 0 8px; }
+.welcome p { margin: 0; line-height: 1.6; color: #e0f5e8; }
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 23px;
+}
+
+.stat-card, .panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    box-shadow: var(--shadow);
+}
+
+.stat-card { padding: 21px; }
+.stat-top { display: flex; justify-content: space-between; gap: 10px; }
+.stat-label { color: var(--muted); font-size: 13px; }
+.stat-number { font-size: 29px; font-weight: 750; margin-top: 13px; }
+.stat-icon { background: var(--green-light); padding: 10px; border-radius: 10px; }
+
+.panel { padding: 21px; margin-bottom: 22px; }
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+.panel-header h3 { margin: 0; font-size: 17px; }
+.panel-header p { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.search-box { flex: 1; min-width: 200px; }
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.field { min-width: 0; }
+.form-actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 18px; }
+
+.table-wrap { overflow-x: auto; width: 100%; }
+
+table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th {
+    text-align: left;
+    background: #f4f8f5;
+    color: #617166;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+th, td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #edf1ee;
+}
+
+tbody tr:hover { background: #fbfdfb; }
+
+.medicine-name { font-weight: 650; }
+.subtext { color: var(--muted); font-size: 11px; margin-top: 4px; }
+
+.stock-badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #e8f7ed;
+    color: #167543;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.stock-badge.low { background: #fff4d9; color: #946200; }
+.stock-badge.out { background: #ffebeb; color: #b12828; }
+
+.table-actions { display: flex; gap: 6px; }
+.table-actions button { padding: 7px 9px; font-size: 12px; }
+
+.empty-state {
+    text-align: center;
+    padding: 25px;
+    color: var(--muted);
+}
+
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+
+.mobile-menu { display: none; }
+
+@media (max-width: 950px) {
+    .sidebar { width: 205px; }
+    .content { padding: 20px; }
+    .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+    .dashboard.active { display: block; }
+    .sidebar { width: 100%; padding: 13px; border-right: 0; border-bottom: 1px solid var(--border); }
+    .sidebar .brand { padding-bottom: 12px; }
+    .sidebar nav { display: flex; flex-wrap: wrap; }
+    .nav-label, .side-bottom { display: none; }
+    .side-link { width: auto; margin: 2px; padding: 9px 11px; font-size: 12px; }
+    .topbar { padding: 16px; }
+    .topbar h2 { font-size: 18px; }
+    .content { padding: 14px; }
+    .feature-grid, .form-grid, .stats-grid { grid-template-columns: 1fr; }
+    .hero { padding: 35px 22px; }
+    .public-header { padding: 16px; }
+    .public-nav { width: 100%; }
+}
+.feature-card {
+    background: #ffffff;
+    border: 1px solid #e0ece4;
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 5px 18px rgba(24, 70, 43, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(24, 70, 43, 0.10);
+}
+
+/* GreenCare layout fix */
+html {
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+#publicHome,
+#adminLogin,
+#customerLogin,
+#adminDashboard,
+#customerDashboard {
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.feature-grid,
+.stats-grid,
+.form-grid {
+    gap: 20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- PUBLIC HOME -->
+<section id="publicHome">
+    <header class="public-header">
+        <div class="brand">
+            <div class="brand-icon">🌿</div>
+            <div>
+                <h1>GreenCare Pharmacy</h1>
+                <p>Smart Pharmacy Management</p>
+            </div>
+        </div>
+
+        <nav class="public-nav">
+            <button type="button" class="secondary" onclick="showPublic('publicHome')">Home</button>
+            <button type="button" onclick="showPublic('adminLogin')">Admin Login</button>
+            <button type="button" onclick="showPublic('customerLogin')">Customer Login</button>
+        </nav>
+    </header>
+
+    <main class="public-main">
+        <section class="hero">
+            <div class="eyebrow">A smarter way to manage medicines</div>
+            <h2>Better medicine management. Better care.</h2>
+            <p>
+                GreenCare helps manage medicine records, monitor stock,
+                find available medicines, and track inventory changes
+                through one simple system.
+            </p>
+            <div class="hero-actions">
+                <button type="button" onclick="showPublic('adminLogin')">Admin Portal →</button>
+                <button type="button" class="secondary" onclick="showPublic('customerLogin')">Customer Portal →</button>
+            </div>
+        </section>
+
+        <section class="feature-grid">
+            <article class="feature">
+                <div class="feature-icon">📦</div>
+                <h3>Inventory Control</h3>
+                <p>Add, edit, search, and remove medicine records from the inventory.</p>
+            </article>
+            <article class="feature">
+                <div class="feature-icon">🔎</div>
+                <h3>Medicine Search</h3>
+                <p>Find medicines quickly and check their current stock availability.</p>
+            </article>
+            <article class="feature">
+                <div class="feature-icon">📋</div>
+                <h3>Stock History</h3>
+                <p>Review recorded inventory changes to help monitor medicine quantities.</p>
+            </article>
+        </section>
+    </main>
+
+    <footer class="public-footer">GreenCare Pharmacy Management System · College Project</footer>
+</section>
+
+<!-- ADMIN LOGIN -->
+<section id="adminLogin" class="hidden">
+    <header class="public-header">
+        <div class="brand">
+            <div class="brand-icon">🌿</div>
+            <div><h1>GreenCare Pharmacy</h1><p>Administrator portal</p></div>
+        </div>
+        <button class="secondary" onclick="showPublic('publicHome')">← Home</button>
+    </header>
+
+    <main class="public-main">
+        <div class="login-wrap">
+            <div class="login-card">
+                <div class="eyebrow">Welcome back</div>
+                <h2>Admin Login</h2>
+                <p>Sign in to manage medicine inventory and stock history.</p>
+                <form id="adminLoginForm" class="login-form">
+                    <div>
+                        <label for="adminUsername">Username</label>
+                        <input id="adminUsername" autocomplete="username" required>
+                    </div>
+                    <div>
+                        <label for="adminPassword">Password</label>
+                        <input id="adminPassword" type="password" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit">Sign In as Admin</button>
+                </form>
+                <div id="adminLoginMessage" class="login-message hidden"></div>
+                <p class="small">Demo account: admin / admin123</p>
+            </div>
+        </div>
+    </main>
+</section>
+
+<!-- CUSTOMER LOGIN -->
+<section id="customerLogin" class="hidden">
+    <header class="public-header">
+        <div class="brand">
+            <div class="brand-icon">🌿</div>
+            <div><h1>GreenCare Pharmacy</h1><p>Customer portal</p></div>
+        </div>
+        <button class="secondary" onclick="showPublic('publicHome')">← Home</button>
+    </header>
+
+    <main class="public-main">
+        <div class="login-wrap">
+            <div class="login-card">
+                <div class="eyebrow">Welcome</div>
+                <h2>Customer Login</h2>
+                <p>Sign in to search medicines and check availability.</p>
+                <form id="customerLoginForm" class="login-form">
+                    <div>
+                        <label for="customerUsername">Username</label>
+                        <input id="customerUsername" autocomplete="username" required>
+                    </div>
+                    <div>
+                        <label for="customerPassword">Password</label>
+                        <input id="customerPassword" type="password" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit">Sign In as Customer</button>
+                </form>
+                <div id="customerLoginMessage" class="login-message hidden"></div>
+                <p class="small">Demo account: customer / customer123</p>
+            </div>
+        </div>
+    </main>
+</section>
+
+<!-- ADMIN DASHBOARD -->
+<section id="adminDashboard" class="dashboard">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">🌿</div>
+            <div><h1>GreenCare</h1><p>Pharmacy Admin</p></div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+        <nav>
+            <button class="side-link active" data-view="adminOverview">▦ &nbsp; Dashboard</button>
+            <button class="side-link" data-view="inventoryView">▤ &nbsp; Medicine Inventory</button>
+            <button class="side-link" data-view="historyView">◷ &nbsp; Stock History</button>
+        </nav>
+
+        <div class="side-bottom">
+            <button class="side-link" onclick="logout()">↪ &nbsp; Logout</button>
+        </div>
+    </aside>
+
+    <div class="main-area">
+        <header class="topbar">
+            <div>
+                <h2 id="adminPageTitle">Dashboard</h2>
+                <p>Manage your pharmacy operations</p>
+            </div>
+            <div class="user-chip">
+                <div class="avatar">A</div>
+                <div>Administrator<div class="muted small">Admin account</div></div>
+            </div>
+        </header>
+
+        <main class="content">
+            <section id="adminOverview" class="view active">
+                <div class="welcome">
+                    <h3>Welcome to GreenCare 🌿</h3>
+                    <p>Here is an overview of your medicine inventory. Keep your stock records updated.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-top"><span class="stat-label">Medicine Records</span><span class="stat-icon">📦</span></div>
+                        <div class="stat-number" id="totalMedicines">0</div>
+                        <div class="muted small">Total medicines listed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-top"><span class="stat-label">Total Stock Units</span><span class="stat-icon">🧾</span></div>
+                        <div class="stat-number" id="totalStock">0</div>
+                        <div class="muted small">Units across all records</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-top"><span class="stat-label">Low Stock Items</span><span class="stat-icon">⚠️</span></div>
+                        <div class="stat-number" id="lowStock">0</div>
+                        <div class="muted small">Quantity of 10 or less</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div><h3>Recent Medicine Inventory</h3><p>Latest view of your medicine records</p></div>
+                        <button onclick="goAdminView('inventoryView')">Manage Inventory →</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Medicine</th><th>ID</th><th>Price</th><th>Quantity</th><th>Status</th></tr></thead>
+                            <tbody id="overviewRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="inventoryView" class="view">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div><h3 id="medicineFormTitle">Add New Medicine</h3><p>Add a record or select a medicine below to edit it.</p></div>
+                    </div>
+
+                    <form id="medicineForm" novalidate>
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="medicineId">Medicine ID</label>
+                                <input id="medicineId" placeholder="Example: M101" required>
+                            </div>
+                            <div class="field">
+                                <label for="medicineName">Medicine Name</label>
+                                <input id="medicineName" placeholder="Enter medicine name" required>
+                            </div>
+                            <div class="field">
+                                <label for="medicinePrice">Price (₹)</label>
+                                <input id="medicinePrice" type="number" min="0.01" step="0.01" placeholder="Enter price" required>
+                            </div>
+                            <div class="field">
+                                <label for="medicineQuantity">Quantity</label>
+                                <input id="medicineQuantity" type="number" min="0" step="1" placeholder="Enter quantity" required>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="saveMedicineButton">＋ Add Medicine</button>
+                            <button type="button" id="cancelEditButton" class="secondary hidden" onclick="cancelEdit()">Cancel Edit</button>
+                        </div>
+                    </form>
+                    <div id="inventoryMessage" class="message hidden"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div><h3>Medicine Inventory</h3><p>Search and manage all medicine records.</p></div>
+                        <button class="secondary" onclick="loadMedicines()">↻ Refresh</button>
+                    </div>
+
+                    <div class="toolbar">
+                        <div class="search-box">
+                            <input id="adminSearch" placeholder="🔎  Search by medicine ID or name..." oninput="renderAdminMedicines()">
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Medicine</th><th>ID</th><th>Price</th><th>Quantity</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="adminMedicineRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="historyView" class="view">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div><h3>Stock History</h3><p>Review recorded medicine inventory changes.</p></div>
+                        <button class="secondary" onclick="loadHistory()">↻ Refresh History</button>
+                    </div>
+                    <div id="historyMessage" class="message hidden"></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Time</th><th>Action</th><th>ID</th><th>Medicine</th><th>Old Quantity</th><th>New Quantity</th></tr></thead>
+                            <tbody id="historyRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</section>
+
+<!-- CUSTOMER DASHBOARD -->
+<section id="customerDashboard" class="dashboard">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">🌿</div>
+            <div><h1>GreenCare</h1><p>Customer Portal</p></div>
+        </div>
+        <div class="nav-label">MENU</div>
+        <nav>
+            <button class="side-link active" data-view="customerMedicinesView">⌕ &nbsp; Find Medicines</button>
+        </nav>
+        <div class="side-bottom">
+            <button class="side-link" onclick="logout()">↪ &nbsp; Logout</button>
+        </div>
+    </aside>
+
+    <div class="main-area">
+        <header class="topbar">
+            <div><h2>Find Medicines</h2><p>Search current medicine availability</p></div>
+            <div class="user-chip"><div class="avatar">C</div><div>Customer<div class="muted small">Customer account</div></div></div>
+        </header>
+
+        <main class="content">
+            <section id="customerMedicinesView" class="view active">
+                <div class="welcome">
+                    <h3>Find the medicine you need</h3>
+                    <p>Search by medicine name or ID to check the listed price and availability.</p>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div><h3>Medicine Catalogue</h3><p>Availability shown is based on the current inventory records.</p></div>
+                        <button class="secondary" onclick="loadMedicines()">↻ Refresh</button>
+                    </div>
+                    <div class="toolbar">
+                        <div class="search-box"><input id="customerSearch" placeholder="🔎  Search medicines..." oninput="renderCustomerMedicines()"></div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Medicine ID</th><th>Medicine Name</th><th>Price</th><th>Availability</th></tr></thead>
+                            <tbody id="customerMedicineRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</section>
+
+<script>
+"use strict";
+
+const API = "/api";
+
+let medicines = [];
+let historyRecords = [];
+let editingMedicine = false;
+let currentRole = null;
+
+
+function showPublic(id) {
+    document.querySelectorAll(
+        "#publicHome, #adminLogin, #customerLogin, #adminDashboard, #customerDashboard"
+    ).forEach(function(section) {
+        section.classList.add("hidden");
+    });
+
+    const selectedSection = document.getElementById(id);
+
+    if (selectedSection) {
+        selectedSection.classList.remove("hidden");
+    }
+}
+
+
+
+function showDashboard(id) {
+    document.querySelectorAll(
+        "#publicHome, #adminLogin, #customerLogin, #adminDashboard, #customerDashboard"
+    ).forEach(function(section) {
+        section.classList.add("hidden");
+    });
+
+    const dashboard = document.getElementById(id);
+
+    if (dashboard) {
+        dashboard.classList.remove("hidden");
+        dashboard.classList.add("active");
+    }
+}
+
+
+function setMessage(id, message, isError = false) {
+    const element = document.getElementById(id);
+    element.textContent = message;
+    element.classList.remove("hidden");
+    element.classList.toggle("error", isError);
+}
+
+function clearMessage(id) {
+    const element = document.getElementById(id);
+    element.textContent = "";
+    element.classList.add("hidden");
+    element.classList.remove("error");
+}
+
+async function request(url, options = {}) {
+    const response = await fetch(url, options);
+    const text = await response.text();
+
+    if (!response.ok) {
+        throw new Error(text || "Server error: " + response.status);
+    }
+
+    if (!text.trim()) return null;
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        return text;
+    }
+}
+
+function formOptions(data) {
+    return {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: new URLSearchParams(data).toString()
+    };
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function(character) {
+        return {
+            "&": "&amp;", "<": "&lt;", ">": "&gt;",
+            '"': "&quot;", "'": "&#39;"
+        }[character];
+    });
+}
+
+function formatPrice(price) {
+    const number = Number(price);
+    return Number.isFinite(number) ? "₹" + number.toFixed(2) : "—";
+}
+
+function stockStatus(quantity) {
+    const qty = Number(quantity);
+
+    if (qty <= 0) return '<span class="stock-badge out">Out of stock</span>';
+    if (qty <= 10) return '<span class="stock-badge low">Low stock</span>';
+    return '<span class="stock-badge">In stock</span>';
+}
+
+/* LOGIN */
+
+document.getElementById("adminLoginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("adminUsername").value.trim();
+    const password = document.getElementById("adminPassword").value;
+
+    if (username === "admin" && password === "admin123") {
+        currentRole = "admin";
+        clearMessage("adminLoginMessage");
+        showDashboard("adminDashboard");
+        goAdminView("adminOverview");
+        refreshAdmin();
+    } else {
+        setMessage("adminLoginMessage", "Incorrect admin username or password.", true);
+    }
+});
+
+document.getElementById("customerLoginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("customerUsername").value.trim();
+    const password = document.getElementById("customerPassword").value;
+
+    if (username === "customer" && password === "customer123") {
+        currentRole = "customer";
+        clearMessage("customerLoginMessage");
+        showDashboard("customerDashboard");
+        loadMedicines();
+    } else {
+        setMessage("customerLoginMessage", "Incorrect customer username or password.", true);
+    }
+});
+
+function logout() {
+    currentRole = null;
+    cancelEdit();
+    document.getElementById("adminLoginForm").reset();
+    document.getElementById("customerLoginForm").reset();
+    showPublic("publicHome");
+}
+
+/* DASHBOARD NAVIGATION */
+
+document.querySelectorAll(".side-link[data-view]").forEach(function(button) {
+    button.addEventListener("click", function() {
+        if (currentRole === "admin") {
+            goAdminView(button.dataset.view);
+        } else if (currentRole === "customer") {
+            goCustomerView(button.dataset.view);
+        }
+    });
+});
+
+function goAdminView(viewId) {
+    document.querySelectorAll("#adminDashboard .view").forEach(function(view) {
+        view.classList.remove("active");
+    });
+
+    document.getElementById(viewId).classList.add("active");
+
+    document.querySelectorAll("#adminDashboard .side-link[data-view]").forEach(function(button) {
+        button.classList.toggle("active", button.dataset.view === viewId);
+    });
+
+    const titles = {
+        adminOverview: "Dashboard",
+        inventoryView: "Medicine Inventory",
+        historyView: "Stock History"
+    };
+
+    document.getElementById("adminPageTitle").textContent = titles[viewId] || "Dashboard";
+
+    if (viewId === "historyView") loadHistory();
+}
+
+function goCustomerView(viewId) {
+    document.querySelectorAll("#customerDashboard .view").forEach(function(view) {
+        view.classList.remove("active");
+    });
+
+    document.getElementById(viewId).classList.add("active");
+}
+
+/* MEDICINE DATA */
+
+async function loadMedicines() {
+    try {
+        const result = await request(API + "/medicines");
+        medicines = Array.isArray(result) ? result : [];
+
+        renderAdminMedicines();
+        renderCustomerMedicines();
+        renderOverview();
+        updateStats();
+    } catch (error) {
+        if (currentRole === "admin") {
+            setMessage("inventoryMessage", "Could not load medicines: " + error.message, true);
+        } else if (currentRole === "customer") {
+            alert("Could not load medicines. Check that the Java server is running.");
+        }
+    }
+}
+
+function updateStats() {
+    document.getElementById("totalMedicines").textContent = medicines.length;
+
+    document.getElementById("totalStock").textContent =
+        medicines.reduce(function(total, medicine) {
+            return total + (Number(medicine.quantity) || 0);
+        }, 0);
+
+    document.getElementById("lowStock").textContent =
+        medicines.filter(function(medicine) {
+            return Number(medicine.quantity) <= 10;
+        }).length;
+}
+
+function renderOverview() {
+    const body = document.getElementById("overviewRows");
+    const recent = medicines.slice(0, 5);
+
+    if (!recent.length) {
+        body.innerHTML = '<tr><td colspan="5" class="empty-state">No medicines yet. Add your first medicine in Inventory.</td></tr>';
+        return;
+    }
+
+    body.innerHTML = recent.map(function(m) {
+        return `<tr>
+            <td><div class="medicine-name">${escapeHTML(m.name)}</div><div class="subtext">Medicine record</div></td>
+            <td>${escapeHTML(m.id)}</td>
+            <td>${formatPrice(m.price)}</td>
+            <td>${escapeHTML(m.quantity)}</td>
+            <td>${stockStatus(m.quantity)}</td>
+        </tr>`;
+    }).join("");
+}
+
+function renderAdminMedicines() {
+    const body = document.getElementById("adminMedicineRows");
+    const input = document.getElementById("adminSearch");
+    const search = input ? input.value.trim().toLowerCase() : "";
+
+    const filtered = medicines.filter(function(m) {
+        return String(m.id ?? "").toLowerCase().includes(search) ||
+               String(m.name ?? "").toLowerCase().includes(search);
+    });
+
+    if (!filtered.length) {
+        body.innerHTML = '<tr><td colspan="6" class="empty-state">No matching medicines found.</td></tr>';
+        return;
+    }
+
+    body.innerHTML = filtered.map(function(m) {
+        const id = escapeHTML(m.id);
+
+        return `<tr>
+            <td><div class="medicine-name">${escapeHTML(m.name)}</div></td>
+            <td>${id}</td>
+            <td>${formatPrice(m.price)}</td>
+            <td>${escapeHTML(m.quantity)}</td>
+            <td>${stockStatus(m.quantity)}</td>
+            <td><div class="table-actions">
+                <button type="button" data-action="edit" data-id="${id}">Edit</button>
+                <button type="button" class="danger" data-action="delete" data-id="${id}">Delete</button>
+            </div></td>
+        </tr>`;
+    }).join("");
+}
+
+document.getElementById("adminMedicineRows").addEventListener("click", function(event) {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const medicine = medicines.find(function(m) {
+        return String(m.id) === String(button.dataset.id);
+    });
+
+    if (!medicine) {
+        setMessage("inventoryMessage", "Medicine not found. Refresh and try again.", true);
+        return;
+    }
+
+    if (button.dataset.action === "edit") startEdit(medicine);
+    if (button.dataset.action === "delete") deleteMedicine(medicine);
+});
+
+/* ADD AND EDIT */
+
+function startEdit(medicine) {
+    editingMedicine = true;
+
+    document.getElementById("medicineId").value = medicine.id ?? "";
+    document.getElementById("medicineId").readOnly = true;
+    document.getElementById("medicineName").value = medicine.name ?? "";
+    document.getElementById("medicinePrice").value = medicine.price ?? "";
+    document.getElementById("medicineQuantity").value = medicine.quantity ?? "";
+
+    document.getElementById("medicineFormTitle").textContent = "Edit Medicine";
+    document.getElementById("saveMedicineButton").textContent = "Save Changes";
+    document.getElementById("cancelEditButton").classList.remove("hidden");
+
+    clearMessage("inventoryMessage");
+    goAdminView("inventoryView");
+
+    document.getElementById("medicineFormTitle").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+}
+
+function cancelEdit() {
+    editingMedicine = false;
+
+    const form = document.getElementById("medicineForm");
+    if (form) form.reset();
+
+    const idInput = document.getElementById("medicineId");
+    if (idInput) idInput.readOnly = false;
+
+    const title = document.getElementById("medicineFormTitle");
+    if (title) title.textContent = "Add New Medicine";
+
+    const button = document.getElementById("saveMedicineButton");
+    if (button) button.textContent = "＋ Add Medicine";
+
+    const cancelButton = document.getElementById("cancelEditButton");
+    if (cancelButton) cancelButton.classList.add("hidden");
+}
+
+document.getElementById("medicineForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    clearMessage("inventoryMessage");
+
+    const data = {
+        id: document.getElementById("medicineId").value.trim(),
+        name: document.getElementById("medicineName").value.trim(),
+        price: document.getElementById("medicinePrice").value.trim(),
+        quantity: document.getElementById("medicineQuantity").value.trim()
+    };
+
+    if (!data.id || !data.name) {
+        setMessage("inventoryMessage", "Enter both the medicine ID and name.", true);
+        return;
+    }
+
+    const price = Number(data.price);
+    const quantity = Number(data.quantity);
+
+    if (data.price === "" || !Number.isFinite(price) || price <= 0) {
+        setMessage("inventoryMessage", "Enter a price greater than zero.", true);
+        return;
+    }
+
+    if (data.quantity === "" || !Number.isInteger(quantity) || quantity < 0) {
+        setMessage("inventoryMessage", "Quantity must be a whole number of 0 or more.", true);
+        return;
+    }
+
+    const wasEditing = editingMedicine;
+    const saveButton = document.getElementById("saveMedicineButton");
+
+    saveButton.disabled = true;
+    saveButton.textContent = wasEditing ? "Saving Changes..." : "Adding Medicine...";
+
+    try {
+        const endpoint = wasEditing ? "/edit" : "/add";
+        const result = await request(API + endpoint, formOptions(data));
+
+        cancelEdit();
+        await loadMedicines();
+        await loadHistory();
+
+        setMessage(
+            "inventoryMessage",
+            (wasEditing ? "Medicine updated successfully!" : "Medicine added successfully!") +
+            (typeof result === "string" && result.trim() ? "\nServer: " + result : "")
+        );
+    } catch (error) {
+        setMessage(
+            "inventoryMessage",
+            (wasEditing ? "Update failed: " : "Add failed: ") + error.message,
+            true
+        );
+    } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = editingMedicine ? "Save Changes" : "＋ Add Medicine";
+    }
+});
+
+/* DELETE */
+
+async function deleteMedicine(medicine) {
+    if (!confirm("Delete " + medicine.name + " (ID: " + medicine.id + ")?")) return;
+
+    try {
+        const result = await request(API + "/delete", formOptions({id: medicine.id}));
+
+        await loadMedicines();
+        await loadHistory();
+
+        setMessage(
+            "inventoryMessage",
+            "Medicine deleted successfully!" +
+            (typeof result === "string" && result.trim() ? "\nServer: " + result : "")
+        );
+    } catch (error) {
+        setMessage("inventoryMessage", "Delete failed: " + error.message, true);
+    }
+}
+
+/* CUSTOMER SEARCH */
+
+function renderCustomerMedicines() {
+    const body = document.getElementById("customerMedicineRows");
+    const search = document.getElementById("customerSearch").value.trim().toLowerCase();
+
+    const filtered = medicines.filter(function(m) {
+        return String(m.id ?? "").toLowerCase().includes(search) ||
+               String(m.name ?? "").toLowerCase().includes(search);
+    });
+
+    if (!filtered.length) {
+        body.innerHTML = '<tr><td colspan="4" class="empty-state">No matching medicines found.</td></tr>';
+        return;
+    }
+
+    body.innerHTML = filtered.map(function(m) {
+        return `<tr>
+            <td>${escapeHTML(m.id)}</td>
+            <td><div class="medicine-name">${escapeHTML(m.name)}</div></td>
+            <td>${formatPrice(m.price)}</td>
+            <td>${stockStatus(m.quantity)}</td>
+        </tr>`;
+    }).join("");
+}
+
+/* STOCK HISTORY */
+
+async function loadHistory() {
+    try {
+        const result = await request(API + "/history");
+        historyRecords = Array.isArray(result) ? result : [];
+        renderHistory();
+        clearMessage("historyMessage");
+    } catch (error) {
+        setMessage("historyMessage", "Could not load history: " + error.message, true);
+    }
+}
+
+function renderHistory() {
+    const body = document.getElementById("historyRows");
+
+    if (!historyRecords.length) {
+        body.innerHTML = '<tr><td colspan="6" class="empty-state">No stock history recorded yet.</td></tr>';
+        return;
+    }
+
+    body.innerHTML = historyRecords.slice().reverse().map(function(record) {
+        return `<tr>
+            <td>${escapeHTML(record.time ?? "—")}</td>
+            <td>${escapeHTML(record.action ?? "—")}</td>
+            <td>${escapeHTML(record.id ?? "—")}</td>
+            <td>${escapeHTML(record.name ?? "—")}</td>
+            <td>${escapeHTML(record.oldQuantity ?? "—")}</td>
+            <td>${escapeHTML(record.newQuantity ?? "—")}</td>
+        </tr>`;
+    }).join("");
+}
+
+async function refreshAdmin() {
+    await loadMedicines();
+    await loadHistory();
+}
+
+/* CHECK SERVER */
+
+request(API + "/status").catch(function() {
+    console.warn("Java server is not running. Start Main.java before using the dashboard.");
+});
+</script>
+
+</body>
+</html>

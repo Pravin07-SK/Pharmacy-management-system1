@@ -1,0 +1,346 @@
+
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpExchange;
+
+import java.net.InetSocketAddress;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.util.*;
+
+public class Main {
+
+    static List<String[]> medicines = new ArrayList<>();
+    static List<String[]> stockHistory = new ArrayList<>();
+
+    public static void main(String[] args) throws Exception {
+
+        // Sample medicine records
+        medicines.add(new String[]{"M001", "Paracetamol", "50", "100"});
+        medicines.add(new String[]{"M002", "Vitamin C", "80", "40"});
+        medicines.add(new String[]{"M003", "Antiseptic Cream", "65", "25"});
+
+        HttpServer server = HttpServer.create(
+            new InetSocketAddress(8080), 0
+        );
+
+        server.createContext("/", exchange -> {
+            String path = exchange.getRequestURI().getPath();
+            String method = exchange.getRequestMethod();
+
+            try {
+
+                // 1. Open the website
+                if (path.equals("/") && method.equals("GET")) {
+                    Path file = Path.of("..", "web", "index.html");
+
+                    if (!Files.exists(file)) {
+                        file = Path.of("web", "index.html");
+                    }
+
+                    if (!Files.exists(file)) {
+                        send(exchange, 404, "text/plain",
+                            "Website file not found. Check the web folder.");
+                        return;
+                    }
+
+                    byte[] page = Files.readAllBytes(file);
+                    exchange.getResponseHeaders().set(
+                        "Content-Type", "text/html; charset=UTF-8"
+                    );
+                    exchange.sendResponseHeaders(200, page.length);
+
+                    try (OutputStream out = exchange.getResponseBody()) {
+                        out.write(page);
+                    }
+                }
+
+                // 2. Get all medicines
+                else if (path.equals("/api/medicines")
+                        && method.equals("GET")) {
+
+                    StringBuilder json = new StringBuilder("[");
+
+                    for (int i = 0; i < medicines.size(); i++) {
+                        String[] m = medicines.get(i);
+
+                        if (i > 0) json.append(",");
+
+                        json.append("{")
+                            .append("\"id\":\"").append(escapeJson(m[0])).append("\",")
+                            .append("\"name\":\"").append(escapeJson(m[1])).append("\",")
+                            .append("\"price\":").append(m[2]).append(",")
+                            .append("\"quantity\":").append(m[3])
+                            .append("}");
+                    }
+
+                    json.append("]");
+                    send(exchange, 200, "application/json", json.toString());
+                }
+
+                // 3. Add a medicine
+                else if (path.equals("/api/add")
+                        && method.equals("POST")) {
+
+                    Map<String, String> form = readForm(exchange);
+                    String id = form.getOrDefault("id", "").trim();
+                    String name = form.getOrDefault("name", "").trim();
+                    String price = form.getOrDefault("price", "").trim();
+                    String quantity = form.getOrDefault("quantity", "").trim();
+
+                    if (id.isEmpty() || name.isEmpty()) {
+                        send(exchange, 400, "text/plain",
+                            "Medicine ID and name are required.");
+                        return;
+                    }
+
+                    try {
+                        double p = Double.parseDouble(price);
+                        int q = Integer.parseInt(quantity);
+
+                        if (!Double.isFinite(p) || p <= 0 || q < 0) {
+                            send(exchange, 400, "text/plain",
+                                "Enter a valid price and quantity.");
+                            return;
+                        }
+
+                        if (findMedicine(id) != null) {
+                            send(exchange, 409, "text/plain",
+                                "Medicine ID already exists.");
+                            return;
+                        }
+
+                        medicines.add(new String[]{id, name, price, quantity});
+
+                        addHistory("ADDED", id, name,
+                            "-", quantity);
+
+                        send(exchange, 201, "text/plain",
+                            "Medicine added successfully!");
+
+                    } catch (NumberFormatException e) {
+                        send(exchange, 400, "text/plain",
+                            "Invalid price or quantity.");
+                    }
+                }
+
+                // 4. Edit a medicine
+                else if (path.equals("/api/edit")
+                        && method.equals("POST")) {
+
+                    Map<String, String> form = readForm(exchange);
+
+                    String id = form.getOrDefault("id", "").trim();
+                    String name = form.getOrDefault("name", "").trim();
+                    String price = form.getOrDefault("price", "").trim();
+                    String quantity = form.getOrDefault("quantity", "").trim();
+
+                    String[] medicine = findMedicine(id);
+
+                    if (medicine == null) {
+                        send(exchange, 404, "text/plain",
+                            "Medicine not found.");
+                        return;
+                    }
+
+                    if (name.isEmpty()) {
+                        send(exchange, 400, "text/plain",
+                            "Medicine name is required.");
+                        return;
+                    }
+
+                    try {
+                        double p = Double.parseDouble(price);
+                        int q = Integer.parseInt(quantity);
+
+                        if (!Double.isFinite(p) || p <= 0 || q < 0) {
+                            send(exchange, 400, "text/plain",
+                                "Enter a valid price and quantity.");
+                            return;
+                        }
+
+                        String oldName = medicine[1];
+                        String oldQuantity = medicine[3];
+
+                        medicine[1] = name;
+                        medicine[2] = price;
+                        medicine[3] = quantity;
+
+                        addHistory("EDITED", id,
+                            oldName + " -> " + name,
+                            oldQuantity, quantity);
+
+                        send(exchange, 200, "text/plain",
+                            "Medicine updated successfully!");
+
+                    } catch (NumberFormatException e) {
+                        send(exchange, 400, "text/plain",
+                            "Invalid price or quantity.");
+                    }
+                }
+
+                // 5. Delete a medicine
+                else if (path.equals("/api/delete")
+                        && method.equals("POST")) {
+
+                    Map<String, String> form = readForm(exchange);
+                    String id = form.getOrDefault("id", "").trim();
+
+                    String[] medicine = findMedicine(id);
+
+                    if (medicine == null) {
+                        send(exchange, 404, "text/plain",
+                            "Medicine not found.");
+                        return;
+                    }
+
+                    medicines.remove(medicine);
+
+                    addHistory("DELETED", medicine[0],
+                        medicine[1], medicine[3], "0");
+
+                    send(exchange, 200, "text/plain",
+                        "Medicine deleted successfully!");
+                }
+
+                // 6. View stock history
+                else if (path.equals("/api/history")
+                        && method.equals("GET")) {
+
+                    StringBuilder json = new StringBuilder("[");
+
+                    for (int i = 0; i < stockHistory.size(); i++) {
+                        String[] h = stockHistory.get(i);
+
+                        if (i > 0) json.append(",");
+
+                        json.append("{")
+                            .append("\"time\":\"").append(escapeJson(h[0])).append("\",")
+                            .append("\"action\":\"").append(escapeJson(h[1])).append("\",")
+                            .append("\"id\":\"").append(escapeJson(h[2])).append("\",")
+                            .append("\"name\":\"").append(escapeJson(h[3])).append("\",")
+                            .append("\"oldQuantity\":\"").append(escapeJson(h[4])).append("\",")
+                            .append("\"newQuantity\":\"").append(escapeJson(h[5])).append("\"")
+                            .append("}");
+                    }
+
+                    json.append("]");
+                    send(exchange, 200, "application/json", json.toString());
+                }
+
+                // 7. Check backend status
+                else if (path.equals("/api/status")
+                        && method.equals("GET")) {
+
+                    send(exchange, 200, "text/plain",
+                        "GreenCare Pharmacy Java backend is running!");
+                }
+
+                // 8. Unknown address or unsupported request
+                else {
+                    send(exchange, 404, "text/plain",
+                        "API endpoint not found.");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                try {
+                    send(exchange, 500, "text/plain",
+                        "Server error. Check the VS Code terminal.");
+                } catch (IOException ignored) {
+                    // The connection may already be closed.
+                }
+            }
+        });
+
+        server.start();
+
+        System.out.println("==================================");
+        System.out.println(" GreenCare Pharmacy Started!");
+        System.out.println("==================================");
+        System.out.println("Website:  http://localhost:8080/");
+        System.out.println("Medicines: http://localhost:8080/api/medicines");
+        System.out.println("History:   http://localhost:8080/api/history");
+        System.out.println("Status:    http://localhost:8080/api/status");
+    }
+
+    // Find a medicine using its ID
+    static String[] findMedicine(String id) {
+        for (String[] medicine : medicines) {
+            if (medicine[0].equalsIgnoreCase(id)) {
+                return medicine;
+            }
+        }
+        return null;
+    }
+
+    // Read form data sent by the website
+    static Map<String, String> readForm(HttpExchange exchange)
+            throws IOException {
+
+        String body = new String(
+            exchange.getRequestBody().readAllBytes(),
+            StandardCharsets.UTF_8
+        );
+
+        Map<String, String> result = new HashMap<>();
+
+        for (String pair : body.split("&")) {
+            String[] parts = pair.split("=", 2);
+
+            if (parts.length == 2) {
+                result.put(
+                    URLDecoder.decode(parts[0], StandardCharsets.UTF_8),
+                    URLDecoder.decode(parts[1], StandardCharsets.UTF_8)
+                );
+            }
+        }
+
+        return result;
+    }
+
+    // Record stock-related activity
+    static void addHistory(String action, String id, String name,
+                           String oldQuantity, String newQuantity) {
+
+        stockHistory.add(new String[]{
+            LocalDateTime.now().toString(),
+            action,
+            id,
+            name,
+            oldQuantity,
+            newQuantity
+        });
+    }
+
+    // Escape special characters for JSON
+    static String escapeJson(String value) {
+        return value.replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\n", "\\n")
+                    .replace("\r", "\\r")
+                    .replace("\t", "\\t");
+    }
+
+    // Send an HTTP response
+    static void send(HttpExchange exchange, int status,
+                     String contentType, String content)
+            throws IOException {
+
+        byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+
+        exchange.getResponseHeaders().set(
+            "Content-Type", contentType + "; charset=UTF-8"
+        );
+
+        exchange.sendResponseHeaders(status, bytes.length);
+
+        try (OutputStream out = exchange.getResponseBody()) {
+            out.write(bytes);
+        }
+    }
+}
